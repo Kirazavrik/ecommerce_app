@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../constants.dart';
 
@@ -57,7 +58,14 @@ class HomePageHeader extends StatelessWidget {
   }
 }
 
-class SelectCategoryView extends StatelessWidget {
+class SelectCategoryView extends StatefulWidget {
+  const SelectCategoryView({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => SelectCategoryState();
+}
+
+class SelectCategoryState extends State<SelectCategoryView> {
   final List<String> categoryTitle = <String>[
     'Phones',
     'Computers',
@@ -73,29 +81,92 @@ class SelectCategoryView extends StatelessWidget {
     Icons.food_bank_outlined
   ];
 
+  late List<bool> _selected = List.generate(5, (i) => false);
+
+  @override
+  initState() {
+    _selected[0] = true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
+    return SizedBox(
+      height: 95,
       child: ListView.builder(
-        scrollDirection: Axis.horizontal,
+          scrollDirection: Axis.horizontal,
           itemCount: icons.length,
           itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                Container(
-                  height: 71,
-                  width: 71,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle
+            return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selected = List.generate(5, (i) => false);
+                    _selected[index] = !_selected[index];
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 25),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 71,
+                        width: 71,
+                        decoration: BoxDecoration(
+                            color: _selected[index]
+                                ? secondaryColor
+                                : Colors.white,
+                            shape: BoxShape.circle),
+                        child: Icon(
+                          icons[index],
+                          color: _selected[index]
+                              ? Colors.white
+                              : const Color(0xffb3b3c3),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7.0),
+                        child: Text(
+                          categoryTitle[index],
+                          style: TextStyle(
+                              color: _selected[index]
+                                  ? secondaryColor
+                                  : primaryColor,
+                              fontSize: 12),
+                        ),
+                      )
+                    ],
                   ),
-                  child: Icon(icons[index]),
-                ),
-                Text(categoryTitle[index], style: TextStyle(color: secondaryColor, fontSize: 12),)
-              ],
-            );
+                ));
           }),
     );
   }
+}
+
+class SearchField extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: const [
+        Expanded(
+          child: SizedBox(
+            height: 34,
+            width: 300,
+            child: TextField(
+
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(50)))
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 11.0),
+          child: Icon(Icons.add),
+        )
+      ],
+    );
+  }
+
 }

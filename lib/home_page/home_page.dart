@@ -32,12 +32,13 @@ class HomeView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.all(17.0),
                 child: Column(
-                  children: [
+                  children:  [
                     HomePageHeader(),
                     Padding(
-                      padding: const EdgeInsets.only(top: 24.0),
+                      padding: EdgeInsets.only(top: 24.0, bottom: 35),
                       child: SelectCategoryView(),
-                    )
+                    ),
+                    SearchField()
                   ],
                 ),
               );
