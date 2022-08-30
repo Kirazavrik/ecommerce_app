@@ -1,71 +1,78 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ecommerce/home_page/home_page_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants.dart';
+import '../home_page/home_page_model.dart';
 
-class HomePageHeader extends StatelessWidget {
-  const HomePageHeader({Key? key}) : super(key: key);
+TextStyle SFProFonts = TextStyle(fontFamily: 'SFProDisplay');
+
+class HomePageHeaderWidget extends StatelessWidget {
+  const HomePageHeaderWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(
-                Icons.location_on_outlined,
-                color: secondaryColor,
-                size: 18,
-              ),
-              Text(location,
-                  style: TextStyle(color: primaryColor, fontSize: 15)),
-              Icon(Icons.arrow_drop_down_outlined),
-            ],
-          ),
-          const Positioned(
-              right: 0,
-              child: Icon(
-                Icons.filter_alt_outlined,
-                size: 18,
-              ))
-        ]),
-        Padding(
-          padding: const EdgeInsets.only(top: 25),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                headerHome1,
-                style: TextStyle(
-                    color: primaryColor,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w700),
-              ),
-              Text(
-                'view all',
-                style: TextStyle(
-                    color: secondaryColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              )
-            ],
-          ),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 9.0),
+      child: Column(
+        children: [
+          Stack(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.location_on_outlined,
+                  color: secondaryColor,
+                  size: 18,
+                ),
+                Text(location,
+                    style: TextStyle(color: primaryColor, fontSize: 15)),
+                Icon(Icons.arrow_drop_down_outlined),
+              ],
+            ),
+            const Positioned(
+                right: 0,
+                child: Icon(
+                  Icons.filter_alt_outlined,
+                  size: 18,
+                ))
+          ]),
+          Padding(
+            padding: const EdgeInsets.only(top: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  headerHome1,
+                  style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  'view all',
+                  style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
 
-class SelectCategoryView extends StatefulWidget {
-  const SelectCategoryView({Key? key}) : super(key: key);
+class SelectCategoryWidget extends StatefulWidget {
+  const SelectCategoryWidget({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SelectCategoryState();
 }
 
-class SelectCategoryState extends State<SelectCategoryView> {
+class SelectCategoryState extends State<SelectCategoryWidget> {
   final List<String> categoryTitle = <String>[
     'Phones',
     'Computers',
@@ -141,32 +148,157 @@ class SelectCategoryState extends State<SelectCategoryView> {
   }
 }
 
-class SearchField extends StatelessWidget {
-
+class SearchFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        Expanded(
+      children: [
+        const Expanded(
           child: SizedBox(
             height: 34,
             width: 300,
             child: TextField(
-
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(50)))
-              ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: Icon(Icons.search),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                      borderSide: BorderSide(color: Colors.white))),
             ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 11.0),
-          child: Icon(Icons.add),
+          padding: const EdgeInsets.only(left: 11.0),
+          child: Container(
+            height: 34,
+            width: 34,
+            decoration: const BoxDecoration(
+                color: secondaryColor, shape: BoxShape.circle),
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
         )
       ],
     );
   }
+}
 
+class HomeStoreWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 9.0),
+      child: BlocBuilder<HomePageCubit, HomePageState>(
+        builder: (context, state) {
+          var homeStoreList = state.model.homeStore;
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    'Hot sales',
+                    style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    'view all',
+                    style: TextStyle(
+                        color: secondaryColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400),
+                  )
+                ],
+              ),
+              Container(
+                height: 200,
+                child: PageView.builder(
+                    itemCount: homeStoreList!.length,
+                    itemBuilder: (context, pagePosition) {
+                      return homeStoreElement(homeStoreList![pagePosition]);
+                    }),
+              )
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget homeStoreElement(HomeStore homeStore) {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          image: DecorationImage(
+              image: NetworkImage(homeStore.picture!), fit: BoxFit.fill)),
+      child: Stack(
+        children: [
+          if (homeStore.isNew != null)
+            Positioned(
+                top: 23,
+                left: 24,
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 27,
+                  width: 27,
+                  decoration: const BoxDecoration(
+                      color: secondaryColor, shape: BoxShape.circle),
+                  child: Text(
+                    'New',
+                    style:
+                        SFProFonts.copyWith(fontSize: 10, color: Colors.white),
+                  ),
+                )),
+          Positioned(
+              left: 24.0,
+              top: 68.0,
+              child: Text(
+                homeStore.title!,
+                style: SFProFonts.copyWith(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white),
+              )),
+          Positioned(
+              left: 24.0,
+              top: 100,
+              child: Text(
+                homeStore.subtitle!,
+                style: SFProFonts.copyWith(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white),
+              )),
+          Positioned(
+              left: 24.0,
+              bottom: 34,
+              child: SizedBox(
+                height: 27.0,
+                width: 98.0,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+
+                    backgroundColor: Colors.white
+                  ),
+                  child: Text(
+                    'Buy now!',
+                    style: SFProFonts.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: primaryColor),
+                  ),
+                  onPressed: () {},
+                ),
+              ))
+        ],
+      ),
+    );
+  }
 }
