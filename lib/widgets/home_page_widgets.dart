@@ -1,7 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce/home_page/home_page_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:transparent_image/transparent_image.dart';
 import '../constants.dart';
 import '../home_page/home_page_model.dart';
 
@@ -208,7 +209,7 @@ class HomeStoreWidget extends StatelessWidget {
                         fontWeight: FontWeight.w700),
                   ),
                   Text(
-                    'view all',
+                    'see more',
                     style: TextStyle(
                         color: secondaryColor,
                         fontSize: 15,
@@ -283,10 +284,7 @@ class HomeStoreWidget extends StatelessWidget {
                 height: 27.0,
                 width: 98.0,
                 child: TextButton(
-                  style: TextButton.styleFrom(
-
-                    backgroundColor: Colors.white
-                  ),
+                  style: TextButton.styleFrom(backgroundColor: Colors.white),
                   child: Text(
                     'Buy now!',
                     style: SFProFonts.copyWith(
@@ -299,6 +297,83 @@ class HomeStoreWidget extends StatelessWidget {
               ))
         ],
       ),
+    );
+  }
+}
+
+class BestSellerWidget extends StatelessWidget {
+  List<BestSeller> bestSellers;
+
+  BestSellerWidget({required this.bestSellers});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 9.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  'Best Seller',
+                  style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  'see more',
+                  style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400),
+                )
+              ],
+            ),
+            Container(
+              child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: bestSellers.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return bestSellerElement(bestSellers[index], context);
+                  }),
+            )
+          ],
+        ));
+  }
+
+  Widget bestSellerElement(BestSeller bestSeller, BuildContext context) {
+    return SizedBox(
+      height: 300,
+      width: 181,
+      child: Card(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                Image.network(
+                  bestSeller.picture!,
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace? stackTrace) {
+                    return Center(child: Icon(Icons.error_outline_outlined));
+                  },
+                )
+              ],
+            ),
+          ),
+          Text(
+            bestSeller.priceWithoutDiscount!.toString(),
+            style: TextStyle(
+                color: primaryColor, fontSize: 16, fontWeight: FontWeight.w700),
+          )
+        ],
+      )),
     );
   }
 }

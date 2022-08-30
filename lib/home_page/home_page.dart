@@ -4,7 +4,6 @@ import 'package:ecommerce/widgets/home_page_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -27,7 +26,8 @@ class HomeView extends StatelessWidget {
         showUnselectedLabels: false,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: '23'),
-          BottomNavigationBarItem(icon: Icon(Icons.access_time_rounded), label: '123')
+          BottomNavigationBarItem(
+              icon: Icon(Icons.access_time_rounded), label: '123')
         ],
       ),
       body: SafeArea(
@@ -39,19 +39,32 @@ class HomeView extends StatelessWidget {
               case HomePageStatus.success:
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children:  [
-                      HomePageHeaderWidget(),
-                      Padding(
-                        padding: EdgeInsets.only(top: 24.0, bottom: 35, left: 19),
-                        child: SelectCategoryWidget(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 26.0, right: 8.0, bottom: 24),
-                        child: SearchFieldWidget(),
-                      ),
-                      HomeStoreWidget()
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        HomePageHeaderWidget(),
+                        Padding(
+                          padding:
+                              EdgeInsets.only(top: 24.0, bottom: 35, left: 19),
+                          child: SelectCategoryWidget(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 26.0, right: 8.0, bottom: 24),
+                          child: SearchFieldWidget(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: HomeStoreWidget(),
+                        ),
+                        BlocBuilder<HomePageCubit, HomePageState>(
+                          builder: (context, state) {
+                            var bestSellers = state.model.bestSeller!;
+                            return BestSellerWidget(bestSellers: bestSellers,);
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 );
             }
